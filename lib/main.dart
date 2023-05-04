@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:validacion_terceros/Pages/homeScreen.dart';
+import 'package:validacion_terceros/services/firebase_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,39 +40,27 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                      child: Text("Home"),
-                      onPressed: () => Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => const Home()),
-                          )),
-                ),
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                      child: Text("Home"),
-                      onPressed: () => Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => const Home()),
-                          )),
-                ),
-              ),
-             Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                      child: Text("Home"),
-                      onPressed: () => Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => const Home()),
-                          )),
-                ),
-              ),
-            ],
+          FutureBuilder(
+            future: FirebaseService.firebaseInit(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await FirebaseService.signInWithGoogle();
+                      },
+                      child: const Text("Iniciar con google"),
+                    ),
+                  ),
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
           ),
         ],
       ),
